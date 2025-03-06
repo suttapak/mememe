@@ -5,22 +5,81 @@ import (
 
 	"github.com/suttapak/starter/helpers"
 	"github.com/suttapak/starter/logger"
+	"github.com/suttapak/starter/internal/filter"
 	"github.com/suttapak/starter/internal/repository"
 )
 
 type (
 	{{ .UpperName }} interface {
-		Impl(ctx context.Context) (err error)
+		Get{{ .UpperName }}(ctx context.Context, id uint) (*model.{{ .UpperName }}, error)
+		Get{{ .UpperName }}s(ctx context.Context, pg *helpers.Pagination, f *filter.{{ .UpperName }}Fillter) ([]model.{{ .UpperName }}, error)
+		Create{{ .UpperName }}(ctx context.Context, input *Create{{ .UpperName }}Request) error
+		Update{{ .UpperName }}(ctx context.Context, id uint, input *Update{{ .UpperName }}Request) error
+		Delete{{ .UpperName }}(ctx context.Context, id uint) error
 	}
 	{{ .LowerName }} struct {
 		logger            	logger.AppLogger
 		helper            	helpers.Helper
 		{{ .LowerName }} 	repository.{{ .UpperName }}
 	}
+
+	Create{{ .UpperName }}Request struct {
+		// Add field here
+	}
+	Update{{ .UpperName }}Request struct {
+		// Add field here
+	}
 )
 
 
-func (i *{{ .LowerName }}) Impl(ctx context.Context) (err error) {
+func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context, id uint) (*model.{{ .UpperName }}, error) {
+	model ,err := i.{{ .LowerName }}.Get{{ .UpperName }}(ctx,nil, id)
+	if err != nil {
+		i.logger.Error(err)
+		return nil, errs.HandleGorm(err)
+	}
+	var res model.{{ .UpperName }}
+	if err := i.helper.ParseJson(model, &res); err != nil {
+		return nil, errs.ErrInvalid
+	}
+	return res, nil
+}
+
+
+func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context, pg *helpers.Pagination, f *filter.{{ .UpperName }}Fillter) ([]model.{{ .UpperName }}, error) {
+	models, err := i.{{ .LowerName }}.Get{{ .UpperName }}s(ctx,nil, pg, f)
+	if err != nil {
+		i.logger.Error(err)
+		return nil, errs.HandleGorm(err)
+	}
+	var res []model.{{ .UpperName }}
+	if err := i.helper.ParseJson(models, &res); err != nil {
+		return nil, errs.ErrInvalid
+	}
+	return res, nil
+}
+
+func (i *{{ .LowerName }}) Create{{ .UpperName }}(ctx context.Context, input *Create{{ .UpperName }}Request) error {
+	body := repository.Create{{ .UpperName }}Request(input)
+	if err := i.{{ .LowerName }}.Create{{ .UpperName }}(ctx,nil, &body); err != nil {
+		i.logger.Error(err)
+		return errs.HandleGorm(err)
+	}
+	return nil
+}
+func (i *{{ .LowerName }}) Update{{ .UpperName }}(ctx context.Context, id uint, input *Update{{ .UpperName }}Request) error {
+	body := repository.Update{{ .UpperName }}Request(input)
+	if err := i.{{ .LowerName }}.Update{{ .UpperName }}(ctx,nil, id, &body); err != nil {
+		i.logger.Error(err)
+		return errs.HandleGorm(err)
+	}
+	return nil
+}
+func (i *{{ .LowerName }}) Delete{{ .UpperName }}(ctx context.Context, id uint) error {
+	if err := i.{{ .LowerName }}.Delete{{ .UpperName }}(ctx,nil, id); err != nil {
+		i.logger.Error(err)
+		return errs.HandleGorm(err)
+	}
 	return nil
 }
 
