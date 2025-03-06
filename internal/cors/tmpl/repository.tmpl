@@ -14,7 +14,7 @@ type (
 	{{ .UpperName }} interface {
 		CommonDB
 		Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error)
-		Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Fillter) ([]model.{{ .UpperName }}, error)
+		Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]model.{{ .UpperName }}, error)
 		Create{{ .UpperName }}(ctx context.Context,tx *gorm.DB, m *Create{{ .UpperName }}Request) error
 		Update{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint, m *Update{{ .UpperName }}Request) error
 		Delete{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) error
@@ -40,7 +40,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, 
 	return &res, err
 }
 
-func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Fillter) ([]model.{{ .UpperName }}, error) {
+func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]model.{{ .UpperName }}, error) {
 	if tx == nil {
 		tx = i.db
 	}
@@ -55,8 +55,8 @@ func (i *{{ .LowerName }}) Create{{ .UpperName }}(ctx context.Context,tx *gorm.D
 	if tx == nil {
 		tx = i.db
 	}
-	model := model.{{ .UpperName }}{}
-	err := tx.Create(&model).Error
+	input := model.{{ .UpperName }}{}
+	err := tx.Create(&input).Error
 	return err
 }
 
@@ -64,8 +64,8 @@ func (i *{{ .LowerName }}) Update{{ .UpperName }}(ctx context.Context,tx *gorm.D
 	if tx == nil {
 		tx = i.db
 	}
-	model := model.{{ .UpperName }}{}
-	err := tx.Model(&model.{{ .UpperName }}{}).Where("id = ?", id).Updates(&model).Error
+	input := model.{{ .UpperName }}{}
+	err := tx.Model(&model.{{ .UpperName }}{}).Where("id = ?", id).Updates(&input).Error
 	return err
 }
 
@@ -73,8 +73,8 @@ func (i *{{ .LowerName }}) Delete{{ .UpperName }}(ctx context.Context,tx *gorm.D
 	if tx == nil {
 		tx = i.db
 	}
-	model := model.{{ .UpperName }}{}
-	err := tx.Where("id = ?", id).Delete(&model).Error
+	input := model.{{ .UpperName }}{}
+	err := tx.Where("id = ?", id).Delete(&input).Error
 	return err
 }
 

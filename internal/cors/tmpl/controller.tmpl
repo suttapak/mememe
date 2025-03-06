@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/suttapak/starter/errs"
 	"github.com/suttapak/starter/internal/service"
@@ -19,7 +21,7 @@ type (
 		{{ .LowerName }} service.{{ .UpperName }}
 	}
 )
-func get{{ .UpperName }}Id(c *gin.Context) uint {
+func get{{ .UpperName }}Id(c *gin.Context) (uint, error) {
 	idStr := c.Param("{{ .LowerName}}_id")
 	if idStr == "" {
 		return 0, errs.ErrNotFound
@@ -57,7 +59,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}s(c *gin.Context) {
 		handlerError(c, err)
 		return
 	}
-	res, err := p.{{ .LowerName }}.Get{{ .UpperName }}s(c, pg, f)
+	res, err := i.{{ .LowerName }}.Get{{ .UpperName }}s(c, pg, f)
 	if err != nil {
 		handlerError(c, err)
 		return

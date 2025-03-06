@@ -27,10 +27,10 @@ func new{{ .UpperName}}(r *gin.Engine, {{ .LowerName }}Controller controller.{{ 
 func use{{ .UpperName}}(a *{{ .LowerName }}) {
 	r := a.r.Group("{{ .LowerName }}", a.guard.Protect)
 	{
-		r.GET("/:{{ .LowerName }}_id", a.Get{{ .UpperName }})
-		r.GET("", a.Get{{ .UpperName }}s)
-		r.POST("", a.Create{{ .UpperName }})
-		r.PUT("/:{{ .LowerName }}_id", a.Update{{ .UpperName }})
-		r.DELETE("/:{{ .LowerName }}_id", a.Delete{{ .UpperName }})
+		r.GET("/:{{ .LowerName }}_id", a.{{ .LowerName}}.Get{{ .UpperName }})
+		r.GET("", a.{{ .LowerName}}.Get{{ .UpperName }}s)
+		r.POST("", a.{{ .LowerName}}.Create{{ .UpperName }})
+		r.PUT("/:{{ .LowerName }}_id", a.{{ .LowerName}}.Update{{ .UpperName }})
+		r.DELETE("/:{{ .LowerName }}_id", a.{{ .LowerName}}.Delete{{ .UpperName }})
 	}
 }
