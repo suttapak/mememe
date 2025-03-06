@@ -1,9 +1,7 @@
 package repository
 
 import (
-	"context"
 
-	"github.com/suttapak/starter/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +18,7 @@ type (
 
 // BeginTx implements {{ .UpperName }}.
 func (i *{{ .LowerName }}) BeginTx() *gorm.DB {
-	return p.db.Begin()
+	return i.db.Begin()
 }
 
 // CommitTx implements {{ .UpperName }}.
