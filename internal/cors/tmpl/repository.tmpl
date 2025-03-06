@@ -8,6 +8,7 @@ import (
 type (
 	{{ .UpperName }} interface {
 		CommonDB
+		Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error)
 	}
 
 	{{ .LowerName }} struct {

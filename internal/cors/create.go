@@ -51,6 +51,10 @@ func Create(name string) error {
 				FilePath:     fmt.Sprintf("./internal/model/%s.go", name),
 				TemplatePath: "tmpl/model.tmpl",
 			},
+			{
+				FilePath:     fmt.Sprintf("./internal/filter/%s.go", name),
+				TemplatePath: "tmpl/filter.tmpl",
+			},
 		}
 		data = Data{
 			UpperName: cases.Title(language.English).String(name),
