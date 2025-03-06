@@ -1,12 +1,12 @@
-# mememe
+# mememe (Me3)
 
-how to use
+install
 
 ```bash
-mememe g [name]
+go install github.com/suttapak/mememe/cmd/mememe@latest
 ```
 
-# exmaple
+usege
 
 ```bash
 mememe g products
