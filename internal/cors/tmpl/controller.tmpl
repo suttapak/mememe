@@ -15,7 +15,7 @@ type (
 	}
 )
 
-func (c *{{ .LowerName }}) Impl(c *gin.Context) {
+func (i *{{ .LowerName }}) Impl(c *gin.Context) {
 	handleJsonResponse(c, nil)
 }
 

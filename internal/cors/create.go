@@ -2,6 +2,7 @@ package cors
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,6 +10,8 @@ import (
 	"text/template"
 
 	"golang.org/x/sync/errgroup"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type (
@@ -22,29 +25,27 @@ type (
 	}
 )
 
-func Create(name string) error {
-	workingDir, err := os.Getwd()
-	if err != nil {
-		return err
-	}
+//go:embed all:tmpl
+var tmplFS embed.FS
 
+func Create(name string) error {
 	var (
 		paths = []Item{
 			{
-				FilePath:     fmt.Sprintf("%s/internal/controller/%s.go", workingDir, name),
-				TemplatePath: fmt.Sprintf("%s/internal/tmpl/controller.tmpl", workingDir),
+				FilePath:     fmt.Sprintf("./internal/controller/%s.go", name),
+				TemplatePath: "tmpl/controller.tmpl",
 			},
 			{
-				FilePath:     fmt.Sprintf("%s/internal/service/%s.go", workingDir, name),
-				TemplatePath: fmt.Sprintf("%s/internal/tmpl/service.tmpl", workingDir),
+				FilePath:     fmt.Sprintf("./internal/service/%s.go", name),
+				TemplatePath: "tmpl/service.tmpl",
 			},
 			{
-				FilePath:     fmt.Sprintf("%s/internal/repository/%s.go", workingDir, name),
-				TemplatePath: fmt.Sprintf("%s/internal/tmpl/repository.tmpl", workingDir),
+				FilePath:     fmt.Sprintf("./internal/repository/%s.go", name),
+				TemplatePath: "tmpl/repository.tmpl",
 			},
 		}
 		data = Data{
-			UpperName: strings.Title(name),
+			UpperName: cases.Title(language.English).String(name),
 			LowerName: strings.ToLower(name),
 		}
 	)
@@ -52,8 +53,12 @@ func Create(name string) error {
 	for _, path := range paths {
 		path := path
 		egp.Go(func() error {
+			tmplContent, err := tmplFS.ReadFile(path.TemplatePath)
+			if err != nil {
+				return err
+			}
 			// parse template
-			t, err := template.ParseFiles(path.TemplatePath)
+			t, err := template.New(path.TemplatePath).Parse(string(tmplContent))
 			if err != nil {
 				return err
 			}

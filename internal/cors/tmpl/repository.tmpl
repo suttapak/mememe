@@ -19,19 +19,19 @@ type (
 
 
 // BeginTx implements {{ .UpperName }}.
-func (p *{{ .LowerName }}) BeginTx() *gorm.DB {
+func (i *{{ .LowerName }}) BeginTx() *gorm.DB {
 	return p.db.Begin()
 }
 
 // CommitTx implements {{ .UpperName }}.
-func (p *{{ .LowerName }}) CommitTx(tx *gorm.DB) {
+func (i *{{ .LowerName }}) CommitTx(tx *gorm.DB) {
 	if tx != nil {
 		tx.Commit()
 	}
 }
 
 // RollbackTx implements {{ .UpperName }}.
-func (p *{{ .LowerName }}) RollbackTx(tx *gorm.DB) {
+func (i *{{ .LowerName }}) RollbackTx(tx *gorm.DB) {
 	if tx != nil {
 		tx.Rollback()
 	}

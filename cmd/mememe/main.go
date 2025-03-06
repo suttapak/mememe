@@ -9,10 +9,13 @@ import (
 	"github.com/suttapak/mememe/internal/cors"
 )
 
+// Version is manually updated when creating a new tag
+var Version = "v0.0.3"
+
 func main() {
 	var rootCmd = &cobra.Command{
-		Use:   "suttapak",
-		Short: "Suttapak is a Golang code generator",
+		Use:   "mememe",
+		Short: "mememe is a Golang code generator",
 	}
 
 	var generateCmd = &cobra.Command{
@@ -25,9 +28,22 @@ func main() {
 				fmt.Println(err)
 				os.Exit(1)
 			}
+			if err := cors.Overwirte(name); err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	var versionCmd = &cobra.Command{
+		Use:   "version",
+		Short: "Print the current version",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("mememe version:", Version)
 		},
 	}
 
 	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(versionCmd)
 	rootCmd.Execute()
 }
