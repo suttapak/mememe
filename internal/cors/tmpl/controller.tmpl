@@ -2,20 +2,108 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/suttapak/starter/errs"
 	"github.com/suttapak/starter/internal/service"
 )
 
 type (
 	{{ .UpperName }} interface {
-		Impl(c *gin.Context)
+		Get{{ .UpperName }}(c *gin.Context)
+		Get{{ .UpperName }}s(c *gin.Context)
+		Create{{ .UpperName }}(c *gin.Context)
+		Update{{ .UpperName }}(c *gin.Context)
+		Delete{{ .UpperName }}(c *gin.Context)
 	}
 
 	{{ .LowerName }} struct {
 		{{ .LowerName }} service.{{ .UpperName }}
 	}
 )
+func get{{ .UpperName }}Id(c *gin.Context) uint {
+	idStr := c.Param("{{ .LowerName}}Id")
+	if idStr == "" {
+		return 0, errs.ErrNotFound
+	}
+	idInt, err := strconv.Atoi(idStr)
+	if err != nil {
+		return 0, errs.ErrBadRequest
+	}
+	return uint(idInt), nil
+}
 
-func (i *{{ .LowerName }}) Impl(c *gin.Context) {
+func (i *{{ .LowerName }}) Get{{ .UpperName }}(c *gin.Context) {
+	id ,err := get{{ .UpperName }}Id(c)
+	if err != nil {
+		handlerError(c, err)
+		return
+	}
+	res, err := i.{{ .LowerName }}.Get{{ .UpperName }}(c, id)
+	if err != nil {
+		handlerError(c, err)
+		return
+	}
+
+	handleJsonResponse(c, res)
+}
+func (i *{{ .LowerName }}) Get{{ .UpperName }}s(c *gin.Context) {
+	pg, err := helpers.Paginate(c)
+	if err != nil {
+		handlerError(c, err)
+		return
+	}
+
+	f, err := filter.New[filter.{{ .UpperName }}Filter](c)
+	if err != nil {
+		handlerError(c, err)
+		return
+	}
+	res, err := p.{{ .LowerName }}.Get{{ .UpperName }}s(c, pg, f)
+	if err != nil {
+		handlerError(c, err)
+		return
+	}
+	handlePaginationJsonResponse(c, res, pg)
+}
+func (i *{{ .LowerName }}) Create{{ .UpperName }}(c *gin.Context) {
+	input := service.Create{{ .UpperName }}Request{}
+	if err := c.ShouldBindJSON(&input); err != nil {
+		handlerError(c, errs.ErrBadRequest)
+		return
+	}
+	if err := i.{{ .LowerName }}.Create{{ .UpperName }}(c, &input); err != nil {
+		handlerError(c, err)
+		return
+	}
+	handleJsonResponse(c, nil)
+}
+func (i *{{ .LowerName }}) Update{{ .UpperName }}(c *gin.Context) {
+	id ,err := get{{ .UpperName }}Id(c)
+	if err != nil {
+		handlerError(c, err)
+		return
+	}
+	input := service.Update{{ .UpperName }}Request{}
+	if err := c.ShouldBindJSON(&input); err != nil {
+		handlerError(c, errs.ErrBadRequest)
+		return
+	}
+	if err := i.{{ .LowerName }}.Update{{ .UpperName }}(c, id, &input); err != nil {
+		handlerError(c, err)
+		return
+	}
+	handleJsonResponse(c, nil)
+}
+
+func (i *{{ .LowerName }}) Delete{{ .UpperName }}(c *gin.Context) {
+	id ,err := get{{ .UpperName }}Id(c)
+	if err != nil {
+		handlerError(c, err)
+		return
+	}
+	if err := i.{{ .LowerName }}.Delete{{ .UpperName }}(c, id); err != nil {
+		handlerError(c, err)
+		return
+	}
 	handleJsonResponse(c, nil)
 }
 
