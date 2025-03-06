@@ -1,4 +1,4 @@
-module github.com/suttapak/generator
+module github.com/suttapak/mememe
 
 go 1.23.2
 
