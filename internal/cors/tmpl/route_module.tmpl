@@ -1,0 +1,8 @@
+package {{ .PackageName }}
+
+import "go.uber.org/fx"
+
+var Module = fx.Options(
+	fx.Provide(new{{ .UpperName }}),
+          fx.Invoke(use{{ .UpperName }}),
+)

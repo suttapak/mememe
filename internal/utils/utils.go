@@ -52,3 +52,20 @@ func IsHaveRepositoryeModuleFile() bool {
 
 	return false
 }
+
+func IsHaveRouteModuleFile() bool {
+	// check if controller module file exists
+	// if exists return true
+	// else
+	// return false
+	workginDir, err := os.Getwd()
+	if err != nil {
+		return false
+	}
+	_, err = os.Stat(workginDir + "/internal/route/module.go")
+	if err == nil {
+		return true
+	}
+
+	return false
+}

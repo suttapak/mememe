@@ -37,6 +37,7 @@ var (
 	controller = "controller"
 	service    = "service"
 	repository = "repository"
+	route      = "route"
 )
 
 func Overwirte(name string) error {
@@ -59,16 +60,30 @@ func Overwirte(name string) error {
 		}
 	}
 
+	if !utils.IsHaveRouteModuleFile() {
+		// create repository module file
+		if err := createRouteModuleFile(name, route); err != nil {
+			return err
+		}
+	}
+
 	var (
 		paths = []string{
 			fmt.Sprintf("./internal/controller/module.go"),
 			fmt.Sprintf("./internal/service/module.go"),
 			fmt.Sprintf("./internal/repository/module.go"),
 		}
+		routePath = fmt.Sprintf("./internal/route/module.go")
 	)
 	var (
-		newModule  = fmt.Sprintf("),\n\tfx.Provide(New%s),\n)", cases.Title(language.English).String(name))
-		moduleName = fmt.Sprintf("fx.Provide(New%s)", cases.Title(language.English).String(name))
+		newModule      = fmt.Sprintf("),\n\tfx.Provide(New%s),\n)", cases.Title(language.English).String(name))
+		moduleName     = fmt.Sprintf("fx.Provide(New%s)", cases.Title(language.English).String(name))
+		routeModuleStr = `),
+	fx.Provide(new%s),
+	fx.Invoke(use%s),
+)`
+		routeModuleName = fmt.Sprintf("fx.Provide(new%s)", cases.Title(language.English).String(name))
+		newRouteModule  = fmt.Sprintf(routeModuleStr, cases.Title(language.English).String(name), cases.Title(language.English).String(name))
 	)
 	egp := errgroup.Group{}
 	for _, path := range paths {
@@ -95,6 +110,26 @@ func Overwirte(name string) error {
 			return nil
 		})
 	}
+	egp.Go(func() error {
+		content, err := os.ReadFile(routePath)
+		if err != nil {
+			return err
+		}
+
+		text := string(content)
+		if strings.Contains(text, routeModuleName) {
+			return nil
+		}
+		re := regexp.MustCompile(`\),\n\)`)
+		text = re.ReplaceAllString(text, newRouteModule)
+
+		// write file
+		if err := os.WriteFile(routePath, []byte(text), 0644); err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err := egp.Wait(); err != nil {
 		return err
 	}
@@ -104,6 +139,36 @@ func Overwirte(name string) error {
 
 func createModuleFile(name, pkgname string) error {
 	tmplContent, err := tmplFS.ReadFile("tmpl/module.tmpl")
+	if err != nil {
+		return err
+	}
+	// parse template
+	t, err := template.New("tmpl/module.tmpl").Parse(string(tmplContent))
+	if err != nil {
+		return err
+	}
+	buf := new(bytes.Buffer)
+	if err = t.Execute(buf, ModuleDto{
+		PackageName: pkgname,
+		UpperName:   cases.Title(language.English).String(name),
+	}); err != nil {
+		return err
+	}
+	// create file
+	// create file
+	f, err := os.Create(fmt.Sprintf("./internal/%s/module.go", pkgname))
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = f.Write(buf.Bytes())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func createRouteModuleFile(name, pkgname string) error {
+	tmplContent, err := tmplFS.ReadFile("tmpl/route_module.tmpl")
 	if err != nil {
 		return err
 	}

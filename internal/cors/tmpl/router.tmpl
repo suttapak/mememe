@@ -1,0 +1,32 @@
+package route
+
+import (
+	"github.com/suttapak/starter/internal/controller"
+	"github.com/suttapak/starter/internal/middleware"
+
+	"github.com/gin-gonic/gin"
+)
+
+type (
+	{{ .LowerName }} struct {
+		r             *gin.Engine
+		guard         middleware.AuthGuardMiddleware
+		{{ .LowerName }} controller.{{ .UpperName}}
+
+	}
+)
+
+func new{{ .UpperName}}(r *gin.Engine, {{ .LowerName }}Controller controller.{{ .UpperName}}, guard middleware.AuthGuardMiddleware) *{{ .LowerName }} {
+	return &{{ .LowerName }}{
+		r:             r,
+		{{ .LowerName }}: {{ .LowerName }}Controller,
+		guard:         guard,
+	}
+}
+
+func use{{ .UpperName}}(a *{{ .LowerName }}) {
+	r := a.r.Group("{{ .LowerName }}", a.guard.Protect)
+	{
+		
+	}
+}
