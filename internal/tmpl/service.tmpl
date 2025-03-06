@@ -1,0 +1,37 @@
+package service
+
+import (
+	"context"
+
+	"github.com/suttapak/starter/helpers"
+	"github.com/suttapak/starter/logger"
+	"github.com/suttapak/starter/internal/repository"
+)
+
+type (
+	{{ .UpperName }} interface {
+		Impl(ctx context.Context) (err error)
+	}
+	{{ .LowerName }} struct {
+		logger            	logger.AppLogger
+		helper            	helpers.Helper
+		{{ .LowerName }} 	repository.{{ .UpperName }}
+	}
+)
+
+
+func (p *{{ .LowerName }}) Impl(ctx context.Context) (err error) {
+	return nil
+}
+
+func New{{ .UpperName }}(
+	logger logger.AppLogger,
+	helper helpers.Helper,
+	{{ .LowerName }}Repo 	repository.{{ .UpperName }},
+) {{ .UpperName }} {
+	return &{{ .LowerName }}{
+		logger: logger,
+		helper: helper,
+		{{ .LowerName }}:{{ .LowerName }}Repo,
+	}
+}

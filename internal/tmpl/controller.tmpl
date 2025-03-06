@@ -1,0 +1,28 @@
+package controller
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/suttapak/starter/internal/service"
+)
+
+type (
+	{{ .UpperName }} interface {
+		Impl(c *gin.Context)
+	}
+
+	{{ .LowerName }} struct {
+		{{ .LowerName }} service.{{ .UpperName }}
+	}
+)
+
+func (c *{{ .LowerName }}) Impl(c *gin.Context) {
+	handleJsonResponse(c, nil)
+}
+
+func New{{ .UpperName }}(
+	{{ .LowerName }}Service service.{{ .UpperName }},
+) {{ .UpperName }} {
+	return &{{ .LowerName }}{
+		{{ .LowerName }}: {{ .LowerName }}Service,
+	}
+}

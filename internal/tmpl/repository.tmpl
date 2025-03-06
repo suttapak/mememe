@@ -1,0 +1,44 @@
+package repository
+
+import (
+	"context"
+
+	"github.com/suttapak/starter/internal/model"
+	"gorm.io/gorm"
+)
+
+type (
+	{{ .UpperName }} interface {
+		CommonDB
+	}
+
+	{{ .LowerName }} struct {
+		db *gorm.DB
+	}
+)
+
+
+// BeginTx implements {{ .UpperName }}.
+func (p *{{ .LowerName }}) BeginTx() *gorm.DB {
+	return p.db.Begin()
+}
+
+// CommitTx implements {{ .UpperName }}.
+func (p *{{ .LowerName }}) CommitTx(tx *gorm.DB) {
+	if tx != nil {
+		tx.Commit()
+	}
+}
+
+// RollbackTx implements {{ .UpperName }}.
+func (p *{{ .LowerName }}) RollbackTx(tx *gorm.DB) {
+	if tx != nil {
+		tx.Rollback()
+	}
+}
+
+func new{{ .UpperName }}(db *gorm.DB) {{ .UpperName }} {
+	return &{{ .LowerName }}{
+		db: db,
+	}
+}
