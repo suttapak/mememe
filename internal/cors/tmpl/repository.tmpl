@@ -1,20 +1,82 @@
 package repository
 
 import (
+	"context"
 
+	"github.com/suttapak/starter/helpers"
+	"github.com/suttapak/starter/internal/filter"
+	"github.com/suttapak/starter/internal/model"
 	"gorm.io/gorm"
+
 )
 
 type (
 	{{ .UpperName }} interface {
 		CommonDB
 		Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error)
+		Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Fillter) ([]model.{{ .UpperName }}, error)
+		Create{{ .UpperName }}(ctx context.Context,tx *gorm.DB, m *Create{{ .UpperName }}Request) error
+		Update{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint, m *Update{{ .UpperName }}Request) error
+		Delete{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) error
+	}
+
+	Create{{ .UpperName }}Request struct {
+	}
+
+	Update{{ .UpperName }}Request struct {
 	}
 
 	{{ .LowerName }} struct {
 		db *gorm.DB
 	}
 )
+
+func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error) {
+	if tx == nil {
+		tx = i.db
+	}
+	var res model.{{ .UpperName }}
+	err := tx.Where("id = ?", id).First(&res).Error
+	return &res, err
+}
+
+func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Fillter) ([]model.{{ .UpperName }}, error) {
+	if tx == nil {
+		tx = i.db
+	}
+	var res []model.{{ .UpperName }}
+	tx = tx.Model(&model.{{ .UpperName }}{}).Count(pg.Count)
+	helpers.Paging(pg)
+	err := tx.Offset(pg.Offset).Limit(pg.Limit).Find(&res).Error	
+	return res, err
+}
+
+func (i *{{ .LowerName }}) Create{{ .UpperName }}(ctx context.Context,tx *gorm.DB, m *Create{{ .UpperName }}Request) error {
+	if tx == nil {
+		tx = i.db
+	}
+	model := model.{{ .UpperName }}{}
+	err := tx.Create(&model).Error
+	return err
+}
+
+func (i *{{ .LowerName }}) Update{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint, m *Update{{ .UpperName }}Request) error {
+	if tx == nil {
+		tx = i.db
+	}
+	model := model.{{ .UpperName }}{}
+	err := tx.Model(&model.{{ .UpperName }}{}).Where("id = ?", id).Updates(&model).Error
+	return err
+}
+
+func (i *{{ .LowerName }}) Delete{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) error {
+	if tx == nil {
+		tx = i.db
+	}
+	model := model.{{ .UpperName }}{}
+	err := tx.Where("id = ?", id).Delete(&model).Error
+	return err
+}
 
 
 // BeginTx implements {{ .UpperName }}.
@@ -36,7 +98,7 @@ func (i *{{ .LowerName }}) RollbackTx(tx *gorm.DB) {
 	}
 }
 
-func new{{ .UpperName }}(db *gorm.DB) {{ .UpperName }} {
+func New{{ .UpperName }}(db *gorm.DB) {{ .UpperName }} {
 	return &{{ .LowerName }}{
 		db: db,
 	}

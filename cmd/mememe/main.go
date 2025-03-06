@@ -35,6 +35,18 @@ func main() {
 		},
 	}
 
+	var cleanCmd = &cobra.Command{
+		Use:   "c [name]",
+		Short: "Clean service, repository, and controller",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			if err := cors.Clean(); err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		},
+	}
+
 	var versionCmd = &cobra.Command{
 		Use:   "version",
 		Short: "Print the current version",
@@ -44,6 +56,7 @@ func main() {
 	}
 
 	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(cleanCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.Execute()
 }

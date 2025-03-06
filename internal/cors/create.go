@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -65,6 +66,12 @@ func Create(name string) error {
 	for _, path := range paths {
 		path := path
 		egp.Go(func() error {
+			// check file exists
+			if _, err := os.Stat(path.FilePath); err == nil {
+				log.Printf("file %s already exists", path.FilePath)
+				return nil
+			}
+
 			tmplContent, err := tmplFS.ReadFile(path.TemplatePath)
 			if err != nil {
 				return err
