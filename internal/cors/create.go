@@ -23,21 +23,24 @@ type (
 )
 
 func Create(name string) error {
+	workingDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
 
 	var (
 		paths = []Item{
-
 			{
-				FilePath:     fmt.Sprintf("./internal/controller/%s.go", name),
-				TemplatePath: "./internal/tmpl/controller.tmpl",
+				FilePath:     fmt.Sprintf("%s/internal/controller/%s.go", workingDir, name),
+				TemplatePath: fmt.Sprintf("%s/internal/tmpl/controller.tmpl", workingDir),
 			},
 			{
-				FilePath:     fmt.Sprintf("./internal/service/%s.go", name),
-				TemplatePath: "./internal/tmpl/service.tmpl",
+				FilePath:     fmt.Sprintf("%s/internal/service/%s.go", workingDir, name),
+				TemplatePath: fmt.Sprintf("%s/internal/tmpl/service.tmpl", workingDir),
 			},
 			{
-				FilePath:     fmt.Sprintf("./internal/repository/%s.go", name),
-				TemplatePath: "./internal/tmpl/repository.tmpl",
+				FilePath:     fmt.Sprintf("%s/internal/repository/%s.go", workingDir, name),
+				TemplatePath: fmt.Sprintf("%s/internal/tmpl/repository.tmpl", workingDir),
 			},
 		}
 		data = Data{
