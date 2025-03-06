@@ -45,7 +45,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB,
 		tx = i.db
 	}
 	var res []model.{{ .UpperName }}
-	tx = tx.Model(&model.{{ .UpperName }}{}).Count(pg.Count)
+	tx = tx.Model(&model.{{ .UpperName }}{}).Count(&pg.Count)
 	helpers.Paging(pg)
 	err := tx.Offset(pg.Offset).Limit(pg.Limit).Find(&res).Error	
 	return res, err

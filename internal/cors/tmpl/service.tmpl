@@ -3,10 +3,11 @@ package service
 import (
 	"context"
 
+	"github.com/suttapak/starter/errs"
 	"github.com/suttapak/starter/helpers"
-	"github.com/suttapak/starter/logger"
 	"github.com/suttapak/starter/internal/filter"
 	"github.com/suttapak/starter/internal/repository"
+	"github.com/suttapak/starter/logger"
 )
 
 type (
@@ -36,7 +37,7 @@ type (
 )
 
 
-func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context, id uint) ({{ .UpperName }}Response, error) {
+func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context, id uint) (*{{ .UpperName }}Response, error) {
 	model ,err := i.{{ .LowerName }}.Get{{ .UpperName }}(ctx,nil, id)
 	if err != nil {
 		i.logger.Error(err)
@@ -46,11 +47,11 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context, id uint) ({{
 	if err := i.helper.ParseJson(model, &res); err != nil {
 		return nil, errs.ErrInvalid
 	}
-	return res, nil
+	return &res, nil
 }
 
 
-func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context, pg *helpers.Pagination, f *filter.{{ .UpperName }}Fillter) ([]{{ .UpperName }}Response, error) {
+func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]{{ .UpperName }}Response, error) {
 	models, err := i.{{ .LowerName }}.Get{{ .UpperName }}s(ctx,nil, pg, f)
 	if err != nil {
 		i.logger.Error(err)
