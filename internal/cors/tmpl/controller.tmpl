@@ -50,7 +50,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}(c *gin.Context) {
 	handleJsonResponse(c, res)
 }
 func (i *{{ .LowerName }}) Get{{ .UpperName }}s(c *gin.Context) {
-	pg, err := helpers.Paginate(c)
+	pg, err := helpers.NewPaginate(c)
 	if err != nil {
 		handlerError(c, err)
 		return
