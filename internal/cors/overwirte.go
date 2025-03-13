@@ -74,16 +74,18 @@ func Overwirte(name string) error {
 			fmt.Sprintf("./internal/repository/module.go"),
 		}
 		routePath = fmt.Sprintf("./internal/route/module.go")
+		titleName = cases.Title(language.English).String(name)
+		titleCase = convertSnakeToCamel(titleName)
 	)
 	var (
-		newModule      = fmt.Sprintf("),\n\tfx.Provide(New%s),\n)", cases.Title(language.English).String(name))
-		moduleName     = fmt.Sprintf("fx.Provide(New%s)", cases.Title(language.English).String(name))
+		newModule      = fmt.Sprintf("),\n\tfx.Provide(New%s),\n)", titleCase)
+		moduleName     = fmt.Sprintf("fx.Provide(New%s)", titleCase)
 		routeModuleStr = `),
 	fx.Provide(new%s),
 	fx.Invoke(use%s),
 )`
-		routeModuleName = fmt.Sprintf("fx.Provide(new%s)", cases.Title(language.English).String(name))
-		newRouteModule  = fmt.Sprintf(routeModuleStr, cases.Title(language.English).String(name), cases.Title(language.English).String(name))
+		routeModuleName = fmt.Sprintf("fx.Provide(new%s)", titleCase)
+		newRouteModule  = fmt.Sprintf(routeModuleStr, titleCase, titleCase)
 	)
 	egp := errgroup.Group{}
 	for _, path := range paths {
