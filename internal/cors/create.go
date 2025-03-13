@@ -17,12 +17,10 @@ import (
 
 type (
 	Item struct {
-		FilePath     string
-		TemplatePath string
+		FilePath, TemplatePath string
 	}
 	Data struct {
-		UpperName string
-		LowerName string
+		RealName, UpperName, LowerName string
 	}
 )
 
@@ -58,8 +56,9 @@ func Create(name string) error {
 			},
 		}
 		data = Data{
-			UpperName: cases.Title(language.English).String(name),
-			LowerName: strings.ToLower(name),
+			RealName:  name,
+			UpperName: convertSnakeToCamel(cases.Title(language.English).String(name)),
+			LowerName: convertSnakeToCamel(strings.ToLower(name)),
 		}
 	)
 	egp := errgroup.Group{}
