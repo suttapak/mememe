@@ -11,3 +11,9 @@ usege
 ```bash
 mememe g products
 ```
+
+if nested module like product's category use
+
+```bash
+mememe g product_category
+```
