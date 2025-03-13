@@ -10,7 +10,7 @@ import (
 )
 
 // Version is manually updated when creating a new tag
-var Version = "v0.0.7"
+var Version = "v0.1.1"
 
 func main() {
 	var rootCmd = &cobra.Command{
