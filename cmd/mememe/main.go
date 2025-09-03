@@ -10,7 +10,7 @@ import (
 )
 
 // Version is manually updated when creating a new tag
-var Version = "v0.1.1"
+var Version = "v0.1.2"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -28,7 +28,7 @@ func main() {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			if err := cors.Overwirte(name); err != nil {
+			if err := cors.Overwrite(name); err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}

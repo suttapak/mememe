@@ -1,4 +1,4 @@
-// overwirte module.go file
+// overwrite module.go file
 
 /*
 package logger
@@ -40,7 +40,7 @@ var (
 	route      = "route"
 )
 
-func Overwirte(name string) error {
+func Overwrite(name string) error {
 	if !utils.IsHaveControllerModuleFile() {
 		// create controller module file
 		if err := createModuleFile(name, controller); err != nil {
@@ -53,7 +53,7 @@ func Overwirte(name string) error {
 			return err
 		}
 	}
-	if !utils.IsHaveRepositoryeModuleFile() {
+	if !utils.IsHaveRepositoryModuleFile() {
 		// create repository module file
 		if err := createModuleFile(name, repository); err != nil {
 			return err
@@ -69,11 +69,11 @@ func Overwirte(name string) error {
 
 	var (
 		paths = []string{
-			fmt.Sprintf("./internal/controller/module.go"),
-			fmt.Sprintf("./internal/service/module.go"),
-			fmt.Sprintf("./internal/repository/module.go"),
+			"./internal/controller/module.go",
+			"./internal/service/module.go",
+			"./internal/repository/module.go",
 		}
-		routePath = fmt.Sprintf("./internal/route/module.go")
+		routePath = "./internal/route/module.go"
 		titleName = cases.Title(language.English).String(name)
 		titleCase = convertSnakeToCamel(titleName)
 	)
@@ -152,7 +152,7 @@ func createModuleFile(name, pkgname string) error {
 	buf := new(bytes.Buffer)
 	if err = t.Execute(buf, ModuleDto{
 		PackageName: pkgname,
-		UpperName:   cases.Title(language.English).String(name),
+		UpperName:   convertSnakeToCamel(cases.Title(language.English).String(name)),
 	}); err != nil {
 		return err
 	}
@@ -182,7 +182,7 @@ func createRouteModuleFile(name, pkgname string) error {
 	buf := new(bytes.Buffer)
 	if err = t.Execute(buf, ModuleDto{
 		PackageName: pkgname,
-		UpperName:   cases.Title(language.English).String(name),
+		UpperName:   convertSnakeToCamel(cases.Title(language.English).String(name)),
 	}); err != nil {
 		return err
 	}

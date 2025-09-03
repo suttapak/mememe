@@ -1,7 +1,6 @@
 package cors
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -12,27 +11,27 @@ func Clean() error {
 	var (
 		paths = []Item{
 			{
-				FilePath:     fmt.Sprintf("./internal/controller"),
+				FilePath:     "./internal/controller",
 				TemplatePath: "tmpl/controller.tmpl",
 			},
 			{
-				FilePath:     fmt.Sprintf("./internal/service"),
+				FilePath:     "./internal/service",
 				TemplatePath: "tmpl/service.tmpl",
 			},
 			{
-				FilePath:     fmt.Sprintf("./internal/repository"),
+				FilePath:     "./internal/repository",
 				TemplatePath: "tmpl/repository.tmpl",
 			},
 			{
-				FilePath:     fmt.Sprintf("./internal/route"),
+				FilePath:     "./internal/route",
 				TemplatePath: "tmpl/router.tmpl",
 			},
 			{
-				FilePath:     fmt.Sprintf("./internal/model"),
+				FilePath:     "./internal/model",
 				TemplatePath: "tmpl/model.tmpl",
 			},
 			{
-				FilePath:     fmt.Sprintf("./internal/filter"),
+				FilePath:     "./internal/filter",
 				TemplatePath: "tmpl/filter.tmpl",
 			},
 		}

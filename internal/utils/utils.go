@@ -7,11 +7,11 @@ func IsHaveControllerModuleFile() bool {
 	// if exists return true
 	// else
 	// return false
-	workginDir, err := os.Getwd()
+	workingDir, err := os.Getwd()
 	if err != nil {
 		return false
 	}
-	_, err = os.Stat(workginDir + "/internal/controller/module.go")
+	_, err = os.Stat(workingDir + "/internal/controller/module.go")
 	if err == nil {
 		return true
 	}
@@ -24,11 +24,11 @@ func IsHaveServiceModuleFile() bool {
 	// if exists return true
 	// else
 	// return false
-	workginDir, err := os.Getwd()
+	workingDir, err := os.Getwd()
 	if err != nil {
 		return false
 	}
-	_, err = os.Stat(workginDir + "/internal/service/module.go")
+	_, err = os.Stat(workingDir + "/internal/service/module.go")
 	if err == nil {
 		return true
 	}
@@ -36,16 +36,16 @@ func IsHaveServiceModuleFile() bool {
 	return false
 }
 
-func IsHaveRepositoryeModuleFile() bool {
+func IsHaveRepositoryModuleFile() bool {
 	// check if controller module file exists
 	// if exists return true
 	// else
 	// return false
-	workginDir, err := os.Getwd()
+	workingDir, err := os.Getwd()
 	if err != nil {
 		return false
 	}
-	_, err = os.Stat(workginDir + "/internal/repository/module.go")
+	_, err = os.Stat(workingDir + "/internal/repository/module.go")
 	if err == nil {
 		return true
 	}
@@ -58,11 +58,11 @@ func IsHaveRouteModuleFile() bool {
 	// if exists return true
 	// else
 	// return false
-	workginDir, err := os.Getwd()
+	workingDir, err := os.Getwd()
 	if err != nil {
 		return false
 	}
-	_, err = os.Stat(workginDir + "/internal/route/module.go")
+	_, err = os.Stat(workingDir + "/internal/route/module.go")
 	if err == nil {
 		return true
 	}
