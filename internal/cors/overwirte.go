@@ -199,3 +199,56 @@ func createRouteModuleFile(name, pkgname string) error {
 	}
 	return nil
 }
+
+func OverwriteRepository(name string) error {
+
+	if !utils.IsHaveRepositoryModuleFile() {
+		// create repository module file
+		if err := createModuleFile(name, repository); err != nil {
+			return err
+		}
+	}
+
+	var (
+		paths = []string{
+			"./internal/repository/module.go",
+		}
+		titleName = cases.Title(language.English).String(name)
+		titleCase = convertSnakeToCamel(titleName)
+	)
+	var (
+		newModule  = fmt.Sprintf("),\n\tfx.Provide(New%s),\n)", titleCase)
+		moduleName = fmt.Sprintf("fx.Provide(New%s)", titleCase)
+	)
+	egp := errgroup.Group{}
+	for _, path := range paths {
+		path := path
+		egp.Go(func() error {
+			// read file
+			content, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+
+			text := string(content)
+			if strings.Contains(text, moduleName) {
+				return nil
+			}
+			re := regexp.MustCompile(`\),\n\)`)
+			text = re.ReplaceAllString(text, newModule)
+
+			// write file
+			if err := os.WriteFile(path, []byte(text), 0644); err != nil {
+				return err
+			}
+
+			return nil
+		})
+	}
+
+	if err := egp.Wait(); err != nil {
+		return err
+	}
+
+	return nil
+}

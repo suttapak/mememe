@@ -12,12 +12,11 @@ import (
 
 type (
 	{{ .UpperName }} interface {
-		CommonDB
-		Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error)
-		Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]model.{{ .UpperName }}, error)
-		Create{{ .UpperName }}(ctx context.Context,tx *gorm.DB, m *Create{{ .UpperName }}Request) error
-		Update{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint, m *Update{{ .UpperName }}Request) error
-		Delete{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) error
+		FindById(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error)
+		FindAll(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]model.{{ .UpperName }}, error)
+		Create(ctx context.Context,tx *gorm.DB, m *Create{{ .UpperName }}Request) error
+		Save(ctx context.Context,tx *gorm.DB, id uint, m *Update{{ .UpperName }}Request) error
+		DeleteById(ctx context.Context,tx *gorm.DB, id uint) error
 	}
 
 	Create{{ .UpperName }}Request struct {
@@ -31,7 +30,7 @@ type (
 	}
 )
 
-func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error) {
+func (i *{{ .LowerName }}) FindById(ctx context.Context,tx *gorm.DB, id uint) (*model.{{ .UpperName }}, error) {
 	if tx == nil {
 		tx = i.db
 	}
@@ -40,7 +39,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context,tx *gorm.DB, 
 	return &res, err
 }
 
-func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]model.{{ .UpperName }}, error) {
+func (i *{{ .LowerName }}) FindAll(ctx context.Context,tx *gorm.DB, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]model.{{ .UpperName }}, error) {
 	if tx == nil {
 		tx = i.db
 	}
@@ -51,7 +50,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context,tx *gorm.DB,
 	return res, err
 }
 
-func (i *{{ .LowerName }}) Create{{ .UpperName }}(ctx context.Context,tx *gorm.DB, m *Create{{ .UpperName }}Request) error {
+func (i *{{ .LowerName }}) Create(ctx context.Context,tx *gorm.DB, m *Create{{ .UpperName }}Request) error {
 	if tx == nil {
 		tx = i.db
 	}
@@ -60,7 +59,7 @@ func (i *{{ .LowerName }}) Create{{ .UpperName }}(ctx context.Context,tx *gorm.D
 	return err
 }
 
-func (i *{{ .LowerName }}) Update{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint, m *Update{{ .UpperName }}Request) error {
+func (i *{{ .LowerName }}) Save(ctx context.Context,tx *gorm.DB, id uint, m *Update{{ .UpperName }}Request) error {
 	if tx == nil {
 		tx = i.db
 	}
@@ -69,33 +68,13 @@ func (i *{{ .LowerName }}) Update{{ .UpperName }}(ctx context.Context,tx *gorm.D
 	return err
 }
 
-func (i *{{ .LowerName }}) Delete{{ .UpperName }}(ctx context.Context,tx *gorm.DB, id uint) error {
+func (i *{{ .LowerName }}) DeleteById(ctx context.Context,tx *gorm.DB, id uint) error {
 	if tx == nil {
 		tx = i.db
 	}
 	input := model.{{ .UpperName }}{}
 	err := tx.Where("id = ?", id).Delete(&input).Error
 	return err
-}
-
-
-// BeginTx implements {{ .UpperName }}.
-func (i *{{ .LowerName }}) BeginTx() *gorm.DB {
-	return i.db.Begin()
-}
-
-// CommitTx implements {{ .UpperName }}.
-func (i *{{ .LowerName }}) CommitTx(tx *gorm.DB) {
-	if tx != nil {
-		tx.Commit()
-	}
-}
-
-// RollbackTx implements {{ .UpperName }}.
-func (i *{{ .LowerName }}) RollbackTx(tx *gorm.DB) {
-	if tx != nil {
-		tx.Rollback()
-	}
 }
 
 func New{{ .UpperName }}(db *gorm.DB) {{ .UpperName }} {
