@@ -23,17 +23,6 @@ type (
 		{{ .LowerName }} service.{{ .UpperName }}
 	}
 )
-func get{{ .UpperName }}Id(c *gin.Context) (uint, error) {
-	idStr := c.Param("{{ .RealName}}_id")
-	if idStr == "" {
-		return 0, errs.ErrNotFound
-	}
-	idInt, err := strconv.Atoi(idStr)
-	if err != nil {
-		return 0, errs.ErrBadRequest
-	}
-	return uint(idInt), nil
-}
 
 func (i *{{ .LowerName }}) Get{{ .UpperName }}(c *gin.Context) {
 	id ,err := get{{ .UpperName }}Id(c)
@@ -109,6 +98,18 @@ func (i *{{ .LowerName }}) Delete{{ .UpperName }}(c *gin.Context) {
 		return
 	}
 	handleJsonResponse(c, nil)
+}
+
+func get{{ .UpperName }}Id(c *gin.Context) (uint, error) {
+	idStr := c.Param("{{ .RealName}}_id")
+	if idStr == "" {
+		return 0, errs.ErrNotFound
+	}
+	idInt, err := strconv.Atoi(idStr)
+	if err != nil {
+		return 0, errs.ErrBadRequest
+	}
+	return uint(idInt), nil
 }
 
 func New{{ .UpperName }}(

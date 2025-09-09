@@ -10,7 +10,7 @@ import (
 )
 
 // Version is manually updated when creating a new tag
-var Version = "v0.1.3"
+var Version = "v0.1.4"
 
 func main() {
 	var rootCmd = &cobra.Command{
@@ -29,6 +29,24 @@ func main() {
 				os.Exit(1)
 			}
 			if err := cors.Overwrite(name); err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		},
+	}
+
+	var generateRepositoryCmd = &cobra.Command{
+		Use:   "gr [name]",
+		Short: "Generate repository",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+
+			name := strings.ToLower(args[0])
+			if err := cors.CreateRepository(name); err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			if err := cors.OverwriteRepository(name); err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
@@ -56,6 +74,7 @@ func main() {
 	}
 
 	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(generateRepositoryCmd)
 	rootCmd.AddCommand(cleanCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.Execute()

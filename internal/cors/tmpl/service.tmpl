@@ -22,6 +22,7 @@ type (
 		logger            	logger.AppLogger
 		helper            	helpers.Helper
 		{{ .LowerName }} 	repository.{{ .UpperName }}
+		db 				repository.DatabaseTransaction
 	}
 
 	Create{{ .UpperName }}Request struct {
@@ -38,7 +39,7 @@ type (
 
 
 func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context, id uint) (*{{ .UpperName }}Response, error) {
-	model ,err := i.{{ .LowerName }}.Get{{ .UpperName }}(ctx,nil, id)
+	model ,err := i.{{ .LowerName }}.FindById(ctx,nil, id)
 	if err != nil {
 		i.logger.Error(err)
 		return nil, errs.HandleGorm(err)
@@ -52,7 +53,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}(ctx context.Context, id uint) (*{
 
 
 func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context, pg *helpers.Pagination, f *filter.{{ .UpperName }}Filter) ([]{{ .UpperName }}Response, error) {
-	models, err := i.{{ .LowerName }}.Get{{ .UpperName }}s(ctx,nil, pg, f)
+	models, err := i.{{ .LowerName }}.FindAll(ctx,nil, pg, f)
 	if err != nil {
 		i.logger.Error(err)
 		return nil, errs.HandleGorm(err)
@@ -66,7 +67,7 @@ func (i *{{ .LowerName }}) Get{{ .UpperName }}s(ctx context.Context, pg *helpers
 
 func (i *{{ .LowerName }}) Create{{ .UpperName }}(ctx context.Context, input *Create{{ .UpperName }}Request) error {
 	body := repository.Create{{ .UpperName }}Request(*input)
-	if err := i.{{ .LowerName }}.Create{{ .UpperName }}(ctx,nil, &body); err != nil {
+	if err := i.{{ .LowerName }}.Create(ctx,nil, &body); err != nil {
 		i.logger.Error(err)
 		return errs.HandleGorm(err)
 	}
@@ -74,14 +75,14 @@ func (i *{{ .LowerName }}) Create{{ .UpperName }}(ctx context.Context, input *Cr
 }
 func (i *{{ .LowerName }}) Update{{ .UpperName }}(ctx context.Context, id uint, input *Update{{ .UpperName }}Request) error {
 	body := repository.Update{{ .UpperName }}Request(*input)
-	if err := i.{{ .LowerName }}.Update{{ .UpperName }}(ctx,nil, id, &body); err != nil {
+	if err := i.{{ .LowerName }}.Save(ctx,nil, id, &body); err != nil {
 		i.logger.Error(err)
 		return errs.HandleGorm(err)
 	}
 	return nil
 }
 func (i *{{ .LowerName }}) Delete{{ .UpperName }}(ctx context.Context, id uint) error {
-	if err := i.{{ .LowerName }}.Delete{{ .UpperName }}(ctx,nil, id); err != nil {
+	if err := i.{{ .LowerName }}.DeleteById(ctx,nil, id); err != nil {
 		i.logger.Error(err)
 		return errs.HandleGorm(err)
 	}
@@ -92,10 +93,12 @@ func New{{ .UpperName }}(
 	logger logger.AppLogger,
 	helper helpers.Helper,
 	{{ .LowerName }}Repo 	repository.{{ .UpperName }},
+	db 	repository.DatabaseTransaction,
 ) {{ .UpperName }} {
 	return &{{ .LowerName }}{
 		logger: logger,
 		helper: helper,
 		{{ .LowerName }}:{{ .LowerName }}Repo,
+		db:db,
 	}
 }
